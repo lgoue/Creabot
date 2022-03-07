@@ -1,0 +1,16 @@
+{
+  "Tmax" :30,
+  "NTime":1,
+  "n_user_action":4,
+  "n_agent_action":5,
+  "n_emotion":25,
+  "n_mood":9,
+  "good_mood_reward":10,
+  "good_idea_reward":5,
+  "bad_mood_reward":-20,
+  "no_idea_reward":-1,
+  "reward_P":1,
+  "gamma":0.8,
+  "eps_alpha":0.01,
+  "wp":0.8
+}
