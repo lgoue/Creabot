@@ -137,7 +137,7 @@ class Agent():
 
         self.transitions = self.wp * self.current_user_transitions.copy() + (1-self.wp)*self.mean_transitions.copy()
 
-    def get_action(self,state,eps_explor = 0.3):
+    def get_action(self,state,beta_explor = 0.8):
         print("max trans",np.max(self.transitions))
         if state.emotion is not None:
             self.Q = np.zeros(N_ACTION)
@@ -151,9 +151,14 @@ class Agent():
             for a in self.actions:
                 for m in range(N_MOOD):
                     self.Q[a.bin_number] += self.mood_belief.belief_proba[m]*self.alpha[m][state.as_tuple()][a.bin_number]
-            if np.random.rand()< eps_explor:
-                return self.actions[np.random.randint(N_ACTION)]
-            return self.actions[np.argmax(self.Q)]
+            p = softmax(Q*beta_explor)
+            r = np.random.rand()
+            tot_p = p[0]
+            i=0
+            while r< tot_p:
+                i+=1
+                tot_p+=p[i]
+            return self.actions[i]
 
     def update_alpha(self,state,action,get_reward,next_state):
 
