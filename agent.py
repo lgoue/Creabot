@@ -111,7 +111,7 @@ class Agent():
                     self.current_user_transitions[previous_m][state_tuple][action.bin_number] *= self.current_user_sample[previous_m][state_tuple][action.bin_number]
                     for m in range(N_MOOD):
                         self.current_user_transitions[previous_m][state_tuple][action.bin_number,m][next_state_tuple] = (self.current_user_transitions[previous_m][state_tuple][action.bin_number,m][next_state_tuple]  + mood[m]*previous_b)
-                    self.current_user_transitions[previous_m][state_tuple][action.bin_number] /= (self.current_user_sample[previous_m][state_tuple][action.bin_number]+previous_b)
+                    self.current_user_transitions[previous_m][state_tuple][action.bin_number] /= (self.current_user_sample[previous_m][state_tuple][action.bin_number]+previous_b+0.00001)
                     self.current_user_sample[previous_m][state_tuple][action.bin_number] += previous_b
 
             else :
