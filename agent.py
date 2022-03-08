@@ -153,6 +153,8 @@ class Agent():
                     self.Q[a.bin_number] += self.mood_belief.belief_proba[m]*self.alpha[m][state.as_tuple()][a.bin_number]
             p = softmax(self.Q*beta_explor)
             r = np.random.rand()
+            print(np.sum(p))
+            
             tot_p = p[0]
             i=0
             while r< tot_p:
