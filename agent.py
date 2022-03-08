@@ -154,10 +154,10 @@ class Agent():
             p = softmax(self.Q*beta_explor)
             r = np.random.rand()
             print(np.sum(p))
-            
+            n = len(p)
             tot_p = p[0]
             i=0
-            while r< tot_p:
+            while r< tot_p and i<n-1:
                 i+=1
                 tot_p+=p[i]
             return self.actions[i]
