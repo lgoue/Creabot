@@ -33,20 +33,21 @@ class CreabotState():
 
     def possible_next_state(self,action,next_time):
         if (self.emotion is not None):
-            states = []
-            for e in range(N_EMOTION):
-                for next_da in self.da.possible_next_da():
-                    for score in self.da.possible_idea_quality():
-                        states.append(CreabotState(Emotion(e),action.bin_number,next_time,AgentDa(next_da),Idea(score)))
+            print("errrrorrr")
         else :
+
             states = []
             for m in range(N_MOOD):
                 for next_da in self.da.possible_next_da():
                     for score in self.da.possible_idea_quality():
                         states.append(CreabotState(Mood(m),action.bin_number,next_time,AgentDa(next_da),Idea(score)))
+
         return states
     def as_tuple(self):
         return(self.last_strat,self.time_zone,self.da.bin,self.idea_score.quality)
+
+
+
 
     def copy(self):
 

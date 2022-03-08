@@ -39,7 +39,15 @@ class InteractionModel():
 
     def get_start_state(self):
         return CreabotState(Mood(MoodType.NEUTRAL),ActionType.NEUTRAL,0,AgentDa(DialogActAgent.GREETING),Idea(IdeaQuality.NO))
-
+    def all_states(self):
+        states = []
+        for m in range(N_MOOD):
+            for next_da in self.da.possible_next_da():
+                for score in self.da.possible_idea_quality():
+                    for time in range(self.NTime+1):
+                        for a in range(N_ACTION):
+                            states.append(CreabotState(Mood(m),a,time,AgentDa(next_da),Idea(score)))
+        return states
     def interaction_turn(self,state, verbose = True):
         print("agent :",AgentDa(self.agent.script.current_state).to_string())
         action = self.agent.get_action(state)
@@ -84,7 +92,7 @@ class InteractionModel():
         cumul_reward = 0
 
         while not is_terminal :
-            print("check :", np.sum(self.agent.mean_transitions)/(N_MOOD*N_ACTION*(self.agent.n_time+1)*N_AGENT_DA*N_IDEA_QUALITY*N_ACTION))
+
             is_terminal, state,action, reward = self.interaction_turn(state,verbose=verbose)
             belief_error.append(np.linalg.norm(self.agent.emotion_belief.belief_proba- self.user.Es))
             if state.emotion is not None:

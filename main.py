@@ -23,7 +23,7 @@ if __name__ == '__main__':
         #belief_errors += [np.mean(belief_error)]
         #emotion_errors += [np.mean(emotion_error)]
         #emotion_accs += [np.mean(emotion_acc)]
-        #entropies.append(-np.sum(entropy(np.array(env.agent.mean_transitions))))
+        #entropies.append(-np.sum(entropy(env.agent.mean_transitions)))
         #test.append(np.mean(np.array(env.agent.emotion_transitions)[:,ActionType.SELF_DISCLOSE,EmotionType.LOVE]))
         cumul_rewards.append(cumul_reward)
 
