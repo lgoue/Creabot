@@ -38,13 +38,13 @@ class CreabotState():
 
             states = []
             for m in range(N_MOOD):
-                for next_da in self.da.possible_next_da():
-                    for score in self.da.possible_idea_quality():
-                        states.append(CreabotState(Mood(m),action.bin_number,next_time,AgentDa(next_da),Idea(score)))
+                #for next_da in self.da.possible_next_da():
+                for score in self.da.possible_idea_quality():
+                    states.append(CreabotState(Mood(m),action.bin_number,next_time,AgentDa(O),Idea(score)))
 
         return states
     def as_tuple(self):
-        return(self.last_strat,self.time_zone,self.da.bin,self.idea_score.quality)
+        return(self.last_strat,self.time_zone,self.idea_score.quality)
 
 
 
@@ -62,8 +62,6 @@ class CreabotState():
         state_string += str(self.time_zone)
         state_string += " - "
         state_string += str(Action(self.last_strat).to_string())
-        state_string += " - "
-        state_string += str(self.da.to_string())
         state_string += " - "
         state_string += str(self.idea_score.to_string())
         state_string += " - "

@@ -21,7 +21,7 @@ class User():
         self.Ea = np.zeros(N_EMOTION)
 
 
-        self.Mooddecay = 0.7
+        self.Mooddecay = 0.3
         self.Esdecay = 0.1
 
         self.da = DialogActUser.SILENCE
@@ -133,10 +133,14 @@ class User():
 
         n = len(possible_da)
         if n== 4:
-            self.get_P()*4
-            i = int(np.random.normal(self.mood[0], 0.5)*4)
-            i = max(0,min(3,i))
-            self.da= possible_da[i]
+            if self.mood[0]> 0.2:
+                self.da = possible_da[3]
+            elif self.mood[0]> 0:
+                self.da = possible_da[2]
+            elif self.mood[0]< -0.2:
+                self.da = possible_da[0]
+            else:
+                self.da = possible_da[1]
         else :
             self.da= possible_da[np.random.randint(n)]
     def updateEmotionalState(self):

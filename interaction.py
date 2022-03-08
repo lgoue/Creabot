@@ -42,11 +42,11 @@ class InteractionModel():
     def all_states(self):
         states = []
         for m in range(N_MOOD):
-            for next_da in self.da.possible_next_da():
-                for score in self.da.possible_idea_quality():
-                    for time in range(self.NTime+1):
-                        for a in range(N_ACTION):
-                            states.append(CreabotState(Mood(m),a,time,AgentDa(next_da),Idea(score)))
+            #for next_da in self.da.possible_next_da():
+            for score in self.da.possible_idea_quality():
+                for time in range(self.NTime+1):
+                    for a in range(N_ACTION):
+                        states.append(CreabotState(Mood(m),a,time,AgentDa(0),Idea(score)))
         return states
     def interaction_turn(self,state, verbose = True):
         print("agent :",AgentDa(self.agent.script.current_state).to_string())
@@ -60,7 +60,7 @@ class InteractionModel():
         is_terminal,next_state = self.get_next_state(state,action)
         self.agent.update(observation,action, state, self.get_reward, next_state)
 
-        reward = self.get_reward(state,action, next_state)
+        reward = self.get_reward_no_entro(state,action, next_state)
 
 
         if(verbose):
@@ -145,9 +145,16 @@ class InteractionModel():
     def get_reward(self,state,action,next_state):
 
         if state.emotion is not None:
-            H = - np.sum(entropy(self.agent.transitions[state.emotion.bin_number][state.as_tuple()][action.bin_number]))
-            reward = next_state.idea_score.quality*100 + H  -10*(action.bin_number == state.last_strat)
+            print("error")
         else:
             H = - np.sum(entropy(self.agent.transitions[state.mood.bin_number][state.as_tuple()][action.bin_number]))
-            reward = next_state.idea_score.quality*100 + H-10*(action.bin_number == state.last_strat)
+            reward = next_state.idea_score.quality*10 + H -1*(action.bin_number == state.last_strat)
+        return reward
+    def get_reward_no_entro(self,state,action,next_state):
+
+        if state.emotion is not None:
+            print("error")
+        else:
+            H = - np.sum(entropy(self.agent.transitions[state.mood.bin_number][state.as_tuple()][action.bin_number]))
+            reward = next_state.idea_score.quality*10 -1*(action.bin_number == state.last_strat)
         return reward

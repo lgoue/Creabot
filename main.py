@@ -16,7 +16,7 @@ if __name__ == '__main__':
     entropies = []
     test = []
     cumul_rewards =[]
-    for i in range(2):
+    for i in range(1000):
         emotion_error, emotion_acc, belief_error,action, cumul_reward = env.interaction(verbose = True)
         #mean_emotion_error += [np.mean(emotion_error)]
         #actions += action

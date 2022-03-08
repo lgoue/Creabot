@@ -14,19 +14,18 @@ class Agent():
 
         #self.mean_samples_emotions = np.zeros(N_EMOTION)
         #self.mean_emotion_transitions = np.ones((N_EMOTION,N_ACTION,N_EMOTION))/N_EMOTION
-        self.mean_transitions = np.ones((N_MOOD,N_ACTION,n_time+1,N_AGENT_DA,N_IDEA_QUALITY,N_ACTION,N_MOOD,N_ACTION,n_time+1,N_AGENT_DA,N_IDEA_QUALITY))/(N_MOOD*N_ACTION*(n_time+1)*N_AGENT_DA*N_IDEA_QUALITY)
-        self.mean_samples = np.zeros((N_MOOD,N_ACTION,n_time+1,N_AGENT_DA,N_IDEA_QUALITY,N_ACTION))
+        self.mean_transitions = np.ones((N_MOOD,N_ACTION,n_time+1,N_IDEA_QUALITY,N_ACTION,N_MOOD,N_ACTION,n_time+1,N_IDEA_QUALITY))/(N_MOOD*N_ACTION*(n_time+1)*N_IDEA_QUALITY)
+        self.mean_samples = np.zeros((N_MOOD,N_ACTION,n_time+1,N_IDEA_QUALITY,N_ACTION))
 
         self.ia = 0
         self.n_time = n_time
 
         states = []
         for m in range(N_MOOD):
-            for next_da in range(N_AGENT_DA):
-                for score in range(N_IDEA_QUALITY):
-                    for time in range(self.n_time+1):
-                        for a in range(N_ACTION):
-                            states.append(CreabotState(Mood(m),a,time,AgentDa(next_da),Idea(score)))
+            for score in range(N_IDEA_QUALITY):
+                for time in range(self.n_time+1):
+                    for a in range(N_ACTION):
+                        states.append(CreabotState(Mood(m),a,time,AgentDa(0),Idea(score)))
         self.all_states = states
         """
         for s in range(N_EMOTION):
@@ -39,12 +38,12 @@ class Agent():
         #self.current_user_sample_emotions = np.zeros(N_EMOTION)
         #self.current_user_emotion_transitions = np.ones((N_EMOTION,N_ACTION,N_EMOTION))/N_EMOTION
 
-        self.current_user_transitions = np.ones((N_MOOD,N_ACTION,n_time+1,N_AGENT_DA,N_IDEA_QUALITY,N_ACTION,N_MOOD,N_ACTION,n_time+1,N_AGENT_DA,N_IDEA_QUALITY))/(N_MOOD*N_ACTION*(n_time+1)*N_AGENT_DA*N_IDEA_QUALITY)
-        self.current_user_sample = np.zeros((N_MOOD,N_ACTION,n_time+1,N_AGENT_DA,N_IDEA_QUALITY,N_ACTION))
+        self.current_user_transitions = np.ones((N_MOOD,N_ACTION,n_time+1,N_IDEA_QUALITY,N_ACTION,N_MOOD,N_ACTION,n_time+1,N_IDEA_QUALITY))/(N_MOOD*N_ACTION*(n_time+1)*N_IDEA_QUALITY)
+        self.current_user_sample = np.ones((N_MOOD,N_ACTION,n_time+1,N_IDEA_QUALITY,N_ACTION))
 
 
-        self.alpha = np.ones((N_MOOD,N_ACTION,self.n_time+1,N_AGENT_DA,N_IDEA_QUALITY,N_ACTION))/(N_MOOD*N_ACTION*(n_time+1)*N_AGENT_DA*N_IDEA_QUALITY)
-        self.previous_alpha = np.ones((N_MOOD,N_ACTION,self.n_time+1,N_AGENT_DA,N_IDEA_QUALITY,N_ACTION))/(N_MOOD*N_ACTION*(n_time+1)*N_AGENT_DA*N_IDEA_QUALITY)
+        self.alpha = np.ones((N_MOOD,N_ACTION,self.n_time+1,N_IDEA_QUALITY,N_ACTION))/(N_MOOD*N_ACTION*(n_time+1)*N_IDEA_QUALITY)
+        self.previous_alpha = np.ones((N_MOOD,N_ACTION,self.n_time+1,N_IDEA_QUALITY,N_ACTION))/(N_MOOD*N_ACTION*(n_time+1)*N_IDEA_QUALITY)
 
         self.wp=wp
         self.gamma=gamma
@@ -62,7 +61,7 @@ class Agent():
 
     def new_user(self,start_state,get_reward,next_state):
         self.script = Script()
-        self.current_user_sample = np.zeros((N_MOOD,N_ACTION,self.n_time+1,N_AGENT_DA,N_IDEA_QUALITY,N_ACTION))
+        self.current_user_sample = np.ones((N_MOOD,N_ACTION,self.n_time+1,N_IDEA_QUALITY,N_ACTION))
         self.emotion_belief = EmotionState()
         self.mood_belief = MoodState()
         self.current_user_transitions = self.mean_transitions.copy()
@@ -174,7 +173,6 @@ class Agent():
                     s.mood = mood
 
                     for sp in self.all_states:
-
                         a += self.transitions[s.mood.bin_number][state.as_tuple()][action.bin_number,sp.mood.bin_number][sp.as_tuple()]*(get_reward(s,action,sp) + self.gamma*np.max(self.alpha[sp.mood.bin_number][sp.as_tuple()]))
 
 
