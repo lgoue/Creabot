@@ -56,7 +56,7 @@ class Agent():
         self.emotion_belief = EmotionState()
         self.mood_belief = MoodState()
         self.current_user_transitions = self.mean_transitions.copy()
-        self.transitions = self.wp * self.current_user_transitions + (1-self.wp)*self.mean_transitions
+        self.transitions = self.wp * self.current_user_transitions.copy() + (1-self.wp)*self.mean_transitions.copy()
 
     def update(self,observation, action, state, get_reward,next_state):
         if state.emotion is not None:
