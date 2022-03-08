@@ -52,5 +52,6 @@ class MoodState():
             for m in self.moods:
                 temp += transition[m.bin_number][current_state.as_tuple()][action.bin_number,i][next_state.as_tuple()]*self.belief_proba[m.bin_number]
             B.append(temp*o)
-        B = B/np.sum(B)
+
+        B = B/(np.sum(B)+0.001)
         return MoodState(belief_proba=B)
