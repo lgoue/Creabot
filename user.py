@@ -21,9 +21,9 @@ class User():
         self.Ea = np.zeros(N_EMOTION)
 
 
-        self.Mooddecay = 0#.4
-        self.Esdecay = 0#.1
-        self.emotionvsmood = 3
+        self.Mooddecay = 0.7
+        self.Esdecay = 0.1
+
         self.da = DialogActUser.SILENCE
 
         self.emotions = [Emotion(e) for e in range(N_EMOTION)]
@@ -144,11 +144,13 @@ class User():
         self.Es = self.Es + self.Ea
     def updateMood(self):
         self.mood = self.Mooddecay*self.mood
-        #self.mood =  (self.mood + self.emotionvsmood*np.dot(self.Es,self.alpha))/(self.emotionvsmood+1)
+
         self.mood =  self.mood + np.dot(self.Es,self.alpha)
 
     def print_emotion(self):
         print("The user is in emotion : ",self.emotions[np.argmax(self.Es)].to_string(), "with intensity ",np.max(self.Es))
+    def print_mood(self):
+        print("The user is in mood : ",self.mood)
 
     def goodmood(self):
         return self.mood[0]>0.2
