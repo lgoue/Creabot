@@ -2,11 +2,11 @@ import numpy as np
 N_IDEA_QUALITY=5
 N_AGENT_DA = 10
 class IdeaQuality(object):
-    BAD=0
+    NO = -2
+    BAD= -1
     MEDIUM = 1
-    GOOD=2
-    NO = 3
-    NA = 4
+    GOOD= 2
+    NA = 0
 
 class Idea():
 
@@ -208,24 +208,24 @@ class Script():
                     return [ DialogActUser.GREET]
 
             case DialogActAgent.PROBLEM_STATEMENT:
-                return [ DialogActUser.NO_IDEA,    DialogActUser.GOOD_IDEA,DialogActUser.BAD_IDEA, DialogActUser.MEDIUM_IDEA]
+                return [ DialogActUser.NO_IDEA,DialogActUser.BAD_IDEA, DialogActUser.MEDIUM_IDEA,    DialogActUser.GOOD_IDEA]
 
             case DialogActAgent.ANY_IDEA:
-                return  [ DialogActUser.NO_IDEA,   DialogActUser.GOOD_IDEA,DialogActUser.BAD_IDEA, DialogActUser.MEDIUM_IDEA]
+                return [ DialogActUser.NO_IDEA,DialogActUser.BAD_IDEA, DialogActUser.MEDIUM_IDEA,    DialogActUser.GOOD_IDEA]
             case DialogActAgent.DRQ_NEW_THEME:
-                return [ DialogActUser.NO_IDEA,   DialogActUser.GOOD_IDEA,DialogActUser.BAD_IDEA, DialogActUser.MEDIUM_IDEA]
+                return [ DialogActUser.NO_IDEA,DialogActUser.BAD_IDEA, DialogActUser.MEDIUM_IDEA,    DialogActUser.GOOD_IDEA]
             case DialogActAgent.ACKNOWLEDGE:
-                return [ DialogActUser.NO_IDEA,    DialogActUser.GOOD_IDEA,DialogActUser.BAD_IDEA, DialogActUser.MEDIUM_IDEA]
+                return[ DialogActUser.NO_IDEA,DialogActUser.BAD_IDEA, DialogActUser.MEDIUM_IDEA,    DialogActUser.GOOD_IDEA]
             case DialogActAgent.LLQ:
                 return[ DialogActUser.ELLABORATE, DialogActUser.DO_NOT_KNOW]
             case DialogActAgent.REPHRASE:
                 return[ DialogActUser.YES,DialogActUser.NO]
             case DialogActAgent.DRQ :
-                return [ DialogActUser.NO_IDEA,  DialogActUser.GOOD_IDEA,DialogActUser.BAD_IDEA, DialogActUser.MEDIUM_IDEA]
+                return [ DialogActUser.NO_IDEA,DialogActUser.BAD_IDEA, DialogActUser.MEDIUM_IDEA,    DialogActUser.GOOD_IDEA]
             case DialogActAgent.COMMENT_DO_NOT_KNOW :
-                return  [ DialogActUser.NO_IDEA,  DialogActUser.GOOD_IDEA,DialogActUser.BAD_IDEA, DialogActUser.MEDIUM_IDEA]
+                return  [ DialogActUser.NO_IDEA,DialogActUser.BAD_IDEA, DialogActUser.MEDIUM_IDEA,    DialogActUser.GOOD_IDEA]
             case DialogActAgent.COMMENT_REPHRASE :
-                return  [ DialogActUser.NO_IDEA,   DialogActUser.GOOD_IDEA,DialogActUser.BAD_IDEA, DialogActUser.MEDIUM_IDEA]
+                return  [ DialogActUser.NO_IDEA,DialogActUser.BAD_IDEA, DialogActUser.MEDIUM_IDEA,    DialogActUser.GOOD_IDEA]
 
 
     def update_state(self, user_da):

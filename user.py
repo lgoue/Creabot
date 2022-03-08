@@ -130,8 +130,15 @@ class User():
                 self.last_idea_level = IdeaQuality.MEDIUM
             case DialogActUser.GOOD_IDEA:
                 self.last_idea_level = IdeaQuality.GOOD
+
         n = len(possible_da)
-        self.da= possible_da[np.random.randint(n)]
+        if n== 4:
+            self.get_P()*4
+            i = int(np.random.normal(self.mood[0], 0.5)*4)
+            i = max(0,min(3,i))
+            self.da= possible_da[i]
+        else :
+            self.da= possible_da[np.random.randint(n)]
     def updateEmotionalState(self):
 
         Me = np.zeros(N_EMOTION)

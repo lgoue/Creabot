@@ -136,8 +136,8 @@ class InteractionModel():
 
         if state.emotion is not None:
             H = - np.sum(np.sum(entropy(self.agent.transitions[state.emotion.bin_number][state.as_tuple()][action.bin_number])))
-            reward = next_state.emotion.PAD_values()[0] * self.reward_P + H
+            reward = next_state.idea_score.quality*100 + H  -10*(action.bin_number == state.last_strat)
         else:
             H = - np.sum(np.sum(entropy(self.agent.transitions[state.mood.bin_number][state.as_tuple()][action.bin_number])))
-            reward = next_state.mood.PAD_values()[0] * self.reward_P + H
+            reward = next_state.idea_score.quality*100 + H-10*(action.bin_number == state.last_strat)
         return reward
