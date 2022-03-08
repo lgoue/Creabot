@@ -127,7 +127,8 @@ class Agent():
 
         self.emotion_transitions = self.wp * self.current_user_emotion_transitions.copy() + (1-self.wp)*self.mean_emotion_transitions.copy()
     '''
-    def update_mean_transition(self,state,action,emotion):
+    def update_mean_transition(self):
+        print("update mean trans")
         self.mean_transitions = (self.ia*self.mean_transitions.copy() + self.current_user_transitions.copy())/(self.ia+1)
 
     def update_transition(self):
