@@ -95,6 +95,7 @@ class InteractionModel():
             actions.append(action.bin_number)
             cumul_reward += reward
 
+        self.agent.update_mean_transition()
         self.agent.ia +=1
         if state.emotion is not None:
             return emotion_error, emotion_acc, belief_error,actions, cumul_reward
