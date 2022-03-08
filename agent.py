@@ -157,7 +157,7 @@ class Agent():
             n = len(p)
             tot_p = p[0]
             i=0
-            while r< tot_p and i<n-1:
+            while r > tot_p and i<n-1:
                 i+=1
                 tot_p+=p[i]
             return self.actions[i]
