@@ -71,6 +71,8 @@ class Agent():
             self.update_transition()
             self.update_alpha(state,action,get_reward,next_state)
             self.mood_belief = mood
+            print("check :", np.sum(self.transitions)/(N_MOOD*N_ACTION*(self.n_time+1)*N_AGENT_DA*N_IDEA_QUALITY*N_ACTION))
+            print("check :", np.sum(self.current_user_transitions)/(N_MOOD*N_ACTION*(self.n_time+1)*N_AGENT_DA*N_IDEA_QUALITY*N_ACTION))
 
 
 
@@ -183,6 +185,7 @@ class Agent():
                     s = state.copy()
                     s.mood = mood
                     for m in self.moods:
+
                         sp = next_state.copy()
                         sp.mood = m
                         a += self.transitions[s.mood.bin_number][state.as_tuple()][action.bin_number,sp.mood.bin_number][sp.as_tuple()]*(get_reward(s,action,sp) + self.gamma*np.max(self.alpha[sp.mood.bin_number][sp.as_tuple()]))

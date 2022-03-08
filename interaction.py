@@ -11,7 +11,7 @@ from emotions import N_EMOTION, Emotion, EmotionType
 from action import N_ACTION
 from moods import N_MOOD, Mood, MoodType
 from agent import Agent
-from Script import AgentDa, UserDa, DialogActAgent, Idea, IdeaQuality
+from Script import AgentDa, UserDa, DialogActAgent, Idea, IdeaQuality, N_AGENT_DA,N_IDEA_QUALITY
 
 class InteractionModel():
     def __init__(self):
@@ -84,6 +84,7 @@ class InteractionModel():
         cumul_reward = 0
 
         while not is_terminal :
+            print("check :", np.sum(self.agent.mean_transitions)/(N_MOOD*N_ACTION*(self.agent.n_time+1)*N_AGENT_DA*N_IDEA_QUALITY*N_ACTION))
             is_terminal, state,action, reward = self.interaction_turn(state,verbose=verbose)
             belief_error.append(np.linalg.norm(self.agent.emotion_belief.belief_proba- self.user.Es))
             if state.emotion is not None:
@@ -136,9 +137,9 @@ class InteractionModel():
     def get_reward(self,state,action,next_state):
 
         if state.emotion is not None:
-            H = - np.sum(np.sum(entropy(self.agent.transitions[state.emotion.bin_number][state.as_tuple()][action.bin_number])))
+            H = - np.sum(entropy(self.agent.transitions[state.emotion.bin_number][state.as_tuple()][action.bin_number]))
             reward = next_state.idea_score.quality*100 + H  -10*(action.bin_number == state.last_strat)
         else:
-            H = - np.sum(np.sum(entropy(self.agent.transitions[state.mood.bin_number][state.as_tuple()][action.bin_number])))
+            H = - np.sum(entropy(self.agent.transitions[state.mood.bin_number][state.as_tuple()][action.bin_number]))
             reward = next_state.idea_score.quality*100 + H-10*(action.bin_number == state.last_strat)
         return reward
