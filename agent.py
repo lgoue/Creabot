@@ -151,7 +151,7 @@ class Agent():
             for a in self.actions:
                 for m in range(N_MOOD):
                     self.Q[a.bin_number] += self.mood_belief.belief_proba[m]*self.alpha[m][state.as_tuple()][a.bin_number]
-            p = softmax(Q*beta_explor)
+            p = softmax(self.Q*beta_explor)
             r = np.random.rand()
             tot_p = p[0]
             i=0
