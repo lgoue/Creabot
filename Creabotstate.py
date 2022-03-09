@@ -44,7 +44,7 @@ class CreabotState():
 
         return states
     def as_tuple(self):
-        return(self.last_strat,self.time_zone,self.idea_score.quality)
+        return(self.last_strat,self.time_zone)#self.idea_score.quality)
 
 
 

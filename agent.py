@@ -6,7 +6,7 @@ from MoodState import MoodState
 from utils import softmax
 from moods import N_MOOD,Mood
 from Creabotstate import CreabotState
-from Script import Script, N_IDEA_QUALITY, N_AGENT_DA, AgentDa,Idea
+from Script import Script,  N_AGENT_DA, AgentDa,Idea
 
 class Agent():
 
@@ -14,18 +14,18 @@ class Agent():
 
         #self.mean_samples_emotions = np.zeros(N_EMOTION)
         #self.mean_emotion_transitions = np.ones((N_EMOTION,N_ACTION,N_EMOTION))/N_EMOTION
-        self.mean_transitions = np.ones((N_MOOD,N_ACTION,n_time+1,N_IDEA_QUALITY,N_ACTION,N_MOOD,N_ACTION,n_time+1,N_IDEA_QUALITY))/(N_MOOD*N_ACTION*(n_time+1)*N_IDEA_QUALITY)
-        self.mean_samples = np.zeros((N_MOOD,N_ACTION,n_time+1,N_IDEA_QUALITY,N_ACTION))
-
+        self.mean_transitions = np.ones((N_MOOD,N_ACTION,n_time+1,N_ACTION,N_MOOD,N_ACTION,n_time+1))/(N_MOOD*N_ACTION*(n_time+1))
+        self.mean_samples = np.zeros((N_MOOD,N_ACTION,n_time+1,N_ACTION))
+        self.mean_reward = np.ones((N_MOOD,N_ACTION,n_time+1,N_ACTION,N_MOOD,N_ACTION,n_time+1))/(N_MOOD*N_ACTION*(n_time+1))
         self.ia = 0
         self.n_time = n_time
 
         states = []
         for m in range(N_MOOD):
-            for score in range(N_IDEA_QUALITY):
-                for time in range(self.n_time+1):
-                    for a in range(N_ACTION):
-                        states.append(CreabotState(Mood(m),a,time,AgentDa(0),Idea(score)))
+
+            for time in range(self.n_time+1):
+                for a in range(N_ACTION):
+                    states.append(CreabotState(Mood(m),a,time,AgentDa(0),Idea(0)))
         self.all_states = states
         """
         for s in range(N_EMOTION):
@@ -38,12 +38,12 @@ class Agent():
         #self.current_user_sample_emotions = np.zeros(N_EMOTION)
         #self.current_user_emotion_transitions = np.ones((N_EMOTION,N_ACTION,N_EMOTION))/N_EMOTION
 
-        self.current_user_transitions = np.ones((N_MOOD,N_ACTION,n_time+1,N_IDEA_QUALITY,N_ACTION,N_MOOD,N_ACTION,n_time+1,N_IDEA_QUALITY))/(N_MOOD*N_ACTION*(n_time+1)*N_IDEA_QUALITY)
-        self.current_user_sample = np.ones((N_MOOD,N_ACTION,n_time+1,N_IDEA_QUALITY,N_ACTION))
+        self.current_user_transitions = np.ones((N_MOOD,N_ACTION,n_time+1,N_ACTION,N_MOOD,N_ACTION,n_time+1))/(N_MOOD*N_ACTION*(n_time+1))
+        self.current_user_sample = np.ones((N_MOOD,N_ACTION,n_time+1,N_ACTION))
+        self.current_user_reward = np.ones((N_MOOD,N_ACTION,n_time+1,N_ACTION,N_MOOD,N_ACTION,n_time+1))/(N_MOOD*N_ACTION*(n_time+1))
 
-
-        self.alpha = np.ones((N_MOOD,N_ACTION,self.n_time+1,N_IDEA_QUALITY,N_ACTION))/(N_MOOD*N_ACTION*(n_time+1)*N_IDEA_QUALITY)
-        self.previous_alpha = np.ones((N_MOOD,N_ACTION,self.n_time+1,N_IDEA_QUALITY,N_ACTION))/(N_MOOD*N_ACTION*(n_time+1)*N_IDEA_QUALITY)
+        self.alpha = np.ones((N_MOOD,N_ACTION,self.n_time+1,N_ACTION))/(N_MOOD*N_ACTION*(n_time+1))
+        self.previous_alpha = np.ones((N_MOOD,N_ACTION,self.n_time+1,N_ACTION))/(N_MOOD*N_ACTION*(n_time+1))
 
         self.wp=wp
         self.gamma=gamma
@@ -59,26 +59,26 @@ class Agent():
         self.mood_belief = MoodState()
 
 
-    def new_user(self,start_state,get_reward,next_state):
+    def new_user(self,start_state,next_state):
         self.script = Script()
-        self.current_user_sample = np.ones((N_MOOD,N_ACTION,self.n_time+1,N_IDEA_QUALITY,N_ACTION))
+        self.current_user_sample = np.ones((N_MOOD,N_ACTION,self.n_time+1,N_ACTION))
+        self.current_user_transitions = self.mean_transitions.copy()
+        self.current_user_reward = self.mean_reward.copy()
         self.emotion_belief = EmotionState()
         self.mood_belief = MoodState()
         self.current_user_transitions = self.mean_transitions.copy()
         self.transitions = self.wp * self.current_user_transitions.copy() + (1-self.wp)*self.mean_transitions.copy()
 
-    def update(self,observation, action, state, get_reward,next_state):
+    def update(self,observation, action, state, reward,next_state):
         if state.emotion is not None:
-            emotion = self.emotion_belief.next_belief_state(observation, action, state,next_state, self.transitions )
-            self.update_current_user_transition(state,next_state,action,None,emotion=emotion.belief_proba)
-            self.update_transition()
-            self.update_alpha(state,action,get_reward,next_state)
-            self.emotion_belief = emotion
+            print("erorr")
         else :
             mood = self.mood_belief.next_belief_state(observation, action, state,next_state, self.transitions )
             self.update_current_user_transition(state,next_state,action,mood.belief_proba)
+            self.update_current_user_reward(state,next_state,action,mood.belief_proba,reward)
             self.update_transition()
-            self.update_alpha(state,action,get_reward,next_state)
+            self.update_reward()
+            self.update_alpha(state,action,next_state)
             self.mood_belief = mood
 
 
@@ -115,6 +115,23 @@ class Agent():
 
             else :
                 print("errrorrr")
+    def update_current_user_reward(self,state,next_state,action,mood,reward,emotion=None,belief=True):
+        if state.emotion is not None:
+            print("errrorrrr")
+        else:
+            state_tuple = state.as_tuple()
+            next_state_tuple = next_state.as_tuple()
+            if belief:
+                for previous_m,previous_b in enumerate(self.mood_belief.belief_proba):
+                    self.current_user_reward[previous_m][state_tuple][action.bin_number] *= self.current_user_sample[previous_m][state_tuple][action.bin_number]
+                    for m in range(N_MOOD):
+                        self.current_user_reward[previous_m][state_tuple][action.bin_number,m][next_state_tuple] = (self.current_user_reward[previous_m][state_tuple][action.bin_number,m][next_state_tuple]  + reward*previous_b)
+                    self.current_user_reward[previous_m][state_tuple][action.bin_number] /= (self.current_user_sample[previous_m][state_tuple][action.bin_number]+previous_b+0.00001)
+                    self.current_user_sample[previous_m][state_tuple][action.bin_number] += previous_b
+
+            else :
+                print("errrorrr")
+
 
     '''
     def update_mean_emotion_transition(self,state,action,emotion):
@@ -131,6 +148,13 @@ class Agent():
     def update_transition(self):
 
         self.transitions = self.wp * self.current_user_transitions.copy() + (1-self.wp)*self.mean_transitions.copy()
+    def update_mean_reward(self):
+
+        self.mean_reward = (self.ia*self.mean_reward.copy() + self.current_user_reward.copy())/(self.ia+1)
+
+    def update_reward(self):
+
+        self.reward = self.wp * self.current_user_reward.copy() + (1-self.wp)*self.mean_reward.copy()
 
     def get_action(self,state,beta_explor = 0.8):
 
@@ -157,7 +181,7 @@ class Agent():
                 tot_p+=p[i]
             return self.actions[i]
 
-    def update_alpha(self,state,action,get_reward,next_state):
+    def update_alpha(self,state,action,next_state):
 
         if state.emotion is not None:
             print("errrorrr")
@@ -173,7 +197,7 @@ class Agent():
                     s.mood = mood
 
                     for sp in self.all_states:
-                        a += self.transitions[s.mood.bin_number][state.as_tuple()][action.bin_number,sp.mood.bin_number][sp.as_tuple()]*(get_reward(s,action,sp) + self.gamma*np.max(self.alpha[sp.mood.bin_number][sp.as_tuple()]))
+                        a += self.transitions[s.mood.bin_number][state.as_tuple()][action.bin_number,sp.mood.bin_number][sp.as_tuple()]*(self.mean_reward[s.mood.bin_number][s.as_tuple()][action.bin_number][sp.mood.bin_number][sp.as_tuple()] + self.gamma*np.max(self.alpha[sp.mood.bin_number][sp.as_tuple()]))
 
 
                     self.alpha[s.mood.bin_number][state.as_tuple()][action.bin_number] =a

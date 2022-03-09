@@ -35,7 +35,7 @@ class InteractionModel():
     def reset_episode(self):
         self.user = User()
         self.time = 0
-        self.agent.new_user(self.get_start_state(),self.get_reward,1//self.inte_t)
+        self.agent.new_user(self.get_start_state(),1//self.inte_t)
 
     def get_start_state(self):
         return CreabotState(Mood(MoodType.NEUTRAL),ActionType.NEUTRAL,0,AgentDa(DialogActAgent.GREETING),Idea(IdeaQuality.NO))
@@ -58,9 +58,12 @@ class InteractionModel():
 
 
         is_terminal,next_state = self.get_next_state(state,action)
-        self.agent.update(observation,action, state, self.get_reward, next_state)
 
-        reward = self.get_reward_no_entro(state,action, next_state)
+
+        reward_no_entro = self.get_reward_no_entro(state,action, next_state)
+        reward = self.get_reward(state,action, next_state)
+
+        self.agent.update(observation,action, state,reward, next_state)
 
 
         if(verbose):
@@ -74,7 +77,7 @@ class InteractionModel():
             self.user.print_emotion()
             self.user.print_mood()
             next_state.print()
-        return is_terminal, next_state, action, reward
+        return is_terminal, next_state, action, reward_no_entro
 
 
 
@@ -105,6 +108,7 @@ class InteractionModel():
             cumul_reward += reward
 
         self.agent.update_mean_transition()
+        self.agent.update_mean_reward()
         self.agent.ia +=1
         if state.emotion is not None:
             return emotion_error, emotion_acc, belief_error,actions, cumul_reward
