@@ -160,5 +160,5 @@ class InteractionModel():
             print("error")
         else:
             H = - np.sum(entropy(self.agent.transitions[state.mood.bin_number][state.as_tuple()][action.bin_number]))
-            reward = next_state.idea_score.quality*10 -1*(action.bin_number == state.last_strat)
+            reward = next_state.idea_score.quality*10 -10*(action.bin_number == state.last_strat)
         return reward
