@@ -1,6 +1,6 @@
 {
   "Tmax" :60,
-  "NTime":1,
+  "NTime":2,
   "n_user_action":4,
   "n_agent_action":5,
   "n_emotion":25,

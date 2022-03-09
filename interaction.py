@@ -140,6 +140,10 @@ class InteractionModel():
         self.agent.script.update_state(self.user.da)
 
         idea_quality = self.user.get_idea_quality()
+        next_time = time // self.inte_t
+        if next_time != time:
+            self.agent.current_user_transitions[:,:,next_time,:,:,:,next_time] = self.agent.current_user_transitions[:,:,time,:,:,:,time].copy
+            self.agent.current_user_reward[:,:,next_time,:,:,:,next_time] = self.agent.current_user_reward[:,:,time,:,:,:,time].copy
         if state.emotion is not None:
             return is_terminal,CreabotState(emotion_state,action.bin_number,time // self.inte_t,AgentDa(self.agent.script.current_state),idea_quality)
         else:
@@ -152,7 +156,7 @@ class InteractionModel():
             print("error")
         else:
             H = - np.sum(entropy(self.agent.transitions[state.mood.bin_number][state.as_tuple()][action.bin_number]))
-            reward = next_state.idea_score.quality*10 + H -10*(action.bin_number == state.last_strat)
+            reward = next_state.idea_score.quality*10 + H -1*(action.bin_number == state.last_strat)
         return reward
     def get_reward_no_entro(self,state,action,next_state):
 
@@ -160,5 +164,5 @@ class InteractionModel():
             print("error")
         else:
             H = - np.sum(entropy(self.agent.transitions[state.mood.bin_number][state.as_tuple()][action.bin_number]))
-            reward = next_state.idea_score.quality*10 -10*(action.bin_number == state.last_strat)
+            reward = next_state.idea_score.quality*10 -1*(action.bin_number == state.last_strat)
         return reward
