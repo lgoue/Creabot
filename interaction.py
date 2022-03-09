@@ -29,7 +29,7 @@ class InteractionModel():
 
         #------------- Simulated interaction ------------------#
         self.user = User()
-        self.agent = Agent(n_time = self.NTime,gamma=self.creabot_config['gamma'],wp=self.creabot_config['wp'],eps_alpha=self.creabot_config['eps_alpha'])
+        self.agent = Agent(n_time = self.NTime,gamma=self.creabot_config['gamma'],wp=self.creabot_config['wp'],eps_alpha=self.creabot_config['eps_alpha'],beta = self.creabot_config['beta'])
         self.time = 0
 
     def reset_episode(self):

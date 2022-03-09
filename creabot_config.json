@@ -12,5 +12,6 @@
   "reward_P":1,
   "gamma":0.8,
   "eps_alpha":0.01,
-  "wp":0
+  "wp":0,
+  "beta":0.8
 }

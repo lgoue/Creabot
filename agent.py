@@ -10,7 +10,7 @@ from Script import Script,  N_AGENT_DA, AgentDa,Idea
 
 class Agent():
 
-    def __init__(self,n_time=4,gamma=0.9,wp=0.8,eps_alpha=0.002):
+    def __init__(self,n_time=4,gamma=0.9,wp=0.8,eps_alpha=0.002,beta=0.8):
 
         #self.mean_samples_emotions = np.zeros(N_EMOTION)
         #self.mean_emotion_transitions = np.ones((N_EMOTION,N_ACTION,N_EMOTION))/N_EMOTION
@@ -20,6 +20,8 @@ class Agent():
 
         self.ia = 0
         self.n_time = n_time
+
+        self.beta = beta
 
         states = []
         for m in range(N_MOOD):
@@ -157,7 +159,7 @@ class Agent():
 
         self.reward = self.wp * self.current_user_reward.copy() + (1-self.wp)*self.mean_reward.copy()
 
-    def get_action(self,state,beta_explor = 0.8):
+    def get_action(self,state):
 
         if state.emotion is not None:
             self.Q = np.zeros(N_ACTION)
@@ -171,7 +173,7 @@ class Agent():
             for a in self.actions:
                 for m in range(N_MOOD):
                     self.Q[a.bin_number] += self.mood_belief.belief_proba[m]*self.alpha[m][state.as_tuple()][a.bin_number]
-            p = softmax(self.Q*beta_explor)
+            p = softmax(self.Q*self.beta)
             r = np.random.rand()
 
             n = len(p)
