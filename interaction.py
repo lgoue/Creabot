@@ -141,7 +141,7 @@ class InteractionModel():
 
         idea_quality = self.user.get_idea_quality()
         next_time = time // self.inte_t
-        if next_time != time and next_time !=self.NTime:
+        if next_time != time and next_time != self.NTime+1:
             self.agent.current_user_transitions[:,:,next_time,:,:,:,next_time] = self.agent.current_user_transitions[:,:,time,:,:,:,time].copy()
             self.agent.current_user_reward[:,:,next_time,:,:,:,next_time] = self.agent.current_user_reward[:,:,time,:,:,:,time].copy()
         if state.emotion is not None:
