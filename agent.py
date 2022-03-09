@@ -15,8 +15,9 @@ class Agent():
         #self.mean_samples_emotions = np.zeros(N_EMOTION)
         #self.mean_emotion_transitions = np.ones((N_EMOTION,N_ACTION,N_EMOTION))/N_EMOTION
         self.mean_transitions = np.ones((N_MOOD,N_ACTION,n_time+1,N_ACTION,N_MOOD,N_ACTION,n_time+1))/(N_MOOD*N_ACTION*(n_time+1))
-        self.mean_samples = np.zeros((N_MOOD,N_ACTION,n_time+1,N_ACTION))
+
         self.mean_reward = np.ones((N_MOOD,N_ACTION,n_time+1,N_ACTION,N_MOOD,N_ACTION,n_time+1))/(N_MOOD*N_ACTION*(n_time+1))
+
         self.ia = 0
         self.n_time = n_time
 
@@ -41,7 +42,7 @@ class Agent():
         self.current_user_transitions = np.ones((N_MOOD,N_ACTION,n_time+1,N_ACTION,N_MOOD,N_ACTION,n_time+1))/(N_MOOD*N_ACTION*(n_time+1))
         self.current_user_sample = np.ones((N_MOOD,N_ACTION,n_time+1,N_ACTION))
         self.current_user_reward = np.ones((N_MOOD,N_ACTION,n_time+1,N_ACTION,N_MOOD,N_ACTION,n_time+1))/(N_MOOD*N_ACTION*(n_time+1))
-
+        self.current_user_reward_sample = np.ones((N_MOOD,N_ACTION,self.n_time+1,N_ACTION,N_MOOD,N_ACTION,self.n_time+1))
         self.alpha = np.ones((N_MOOD,N_ACTION,self.n_time+1,N_ACTION))/(N_MOOD*N_ACTION*(n_time+1))
         self.previous_alpha = np.ones((N_MOOD,N_ACTION,self.n_time+1,N_ACTION))/(N_MOOD*N_ACTION*(n_time+1))
 
@@ -64,6 +65,7 @@ class Agent():
         self.current_user_sample = np.ones((N_MOOD,N_ACTION,self.n_time+1,N_ACTION))
         self.current_user_transitions = self.mean_transitions.copy()
         self.current_user_reward = self.mean_reward.copy()
+        self.current_user_reward_sample = np.ones((N_MOOD,N_ACTION,self.n_time+1,N_ACTION,N_MOOD,N_ACTION,self.n_time+1))
         self.emotion_belief = EmotionState()
         self.mood_belief = MoodState()
         self.current_user_transitions = self.mean_transitions.copy()
@@ -123,11 +125,10 @@ class Agent():
             next_state_tuple = next_state.as_tuple()
             if belief:
                 for previous_m,previous_b in enumerate(self.mood_belief.belief_proba):
-                    self.current_user_reward[previous_m][state_tuple][action.bin_number] *= self.current_user_sample[previous_m][state_tuple][action.bin_number]
                     for m in range(N_MOOD):
-                        self.current_user_reward[previous_m][state_tuple][action.bin_number,m][next_state_tuple] = (self.current_user_reward[previous_m][state_tuple][action.bin_number,m][next_state_tuple]  + reward*previous_b)
-                    self.current_user_reward[previous_m][state_tuple][action.bin_number] /= (self.current_user_sample[previous_m][state_tuple][action.bin_number]+previous_b+0.00001)
-                    self.current_user_sample[previous_m][state_tuple][action.bin_number] += previous_b
+                        self.current_user_reward[previous_m][state_tuple][action.bin_number,m][next_state_tuple] +=  reward*previous_b*mood[m]
+                    self.current_user_reward[previous_m][state_tuple][action.bin_number,m][next_state_tuple]  /= (self.current_user_reward_sample[previous_m][state_tuple][action.bin_number,m][next_state_tuple] +previous_b*mood[m]+0.00001)
+                    self.current_user_reward_sample[previous_m][state_tuple][action.bin_number,m][next_state_tuple]  += previous_b*mood[m]
 
             else :
                 print("errrorrr")
