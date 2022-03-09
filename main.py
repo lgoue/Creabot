@@ -36,7 +36,7 @@ if __name__ == '__main__':
     #plt.plot(actions,label = "action")
     #plt.plot(emotion_errors,label = "emotion error")
     #plt.plot(belief_errors, label ="belief error")
-        plt.plot(entropies/np.mean(entropies), label="entropy")
+        plt.plot(entropies, label="entropy")
     #plt.plot(test, label ="test")
     #plt.plot(emotion_accs, label = "emotion accuracy")
         plt.legend()
