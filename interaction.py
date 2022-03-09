@@ -141,9 +141,10 @@ class InteractionModel():
 
         idea_quality = self.user.get_idea_quality()
         next_time = time // self.inte_t
-        if next_time != time and next_time != self.NTime+1:
-            self.agent.current_user_transitions[:,:,next_time,:,:,:,next_time] = self.agent.current_user_transitions[:,:,time,:,:,:,time].copy()
-            self.agent.current_user_reward[:,:,next_time,:,:,:,next_time] = self.agent.current_user_reward[:,:,time,:,:,:,time].copy()
+        if next_time != state.time_zone and next_time != self.NTime+1:
+
+            self.agent.current_user_transitions[:,:,next_time,:,:,:,next_time] = self.agent.current_user_transitions[:,:,state.time_zone,:,:,:,state.time_zone].copy()
+            self.agent.current_user_reward[:,:,next_time,:,:,:,next_time] = self.agent.current_user_reward[:,:,state.time_zone,:,:,:,state.time_zone].copy()
         if state.emotion is not None:
             return is_terminal,CreabotState(emotion_state,action.bin_number,time // self.inte_t,AgentDa(self.agent.script.current_state),idea_quality)
         else:
