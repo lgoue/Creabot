@@ -1,7 +1,9 @@
 import numpy as np
 from emotions import N_EMOTION, Emotion
 from utils import softmax
-class EmotionState():
+
+
+class EmotionState:
     """
     Implement the belief state on emotion
 
@@ -9,7 +11,7 @@ class EmotionState():
 
     def __init__(self, belief_proba=None):
         if belief_proba is None:
-            self.belief_proba = np.ones(N_EMOTION)/N_EMOTION
+            self.belief_proba = np.ones(N_EMOTION) / N_EMOTION
         else:
             self.belief_proba = belief_proba
 
@@ -21,7 +23,7 @@ class EmotionState():
         return distance
 
     def copy(self):
-        return EmotionState(self.belief_proba.copy() )
+        return EmotionState(self.belief_proba.copy())
 
     def equals(self, other_state):
         if self.belief_proba == other_state.belief_proba:
@@ -41,16 +43,22 @@ class EmotionState():
         """
         print(self.to_string())
 
-    def next_belief_state(self,observation, action, current_state,next_state,transition):
-
+    def next_belief_state(
+        self, observation, action, current_state, next_state, transition
+    ):
 
         O = softmax([-e.distance_to_observation(observation) for e in self.emotions])
 
         B = []
-        for i,o in enumerate(O):
+        for i, o in enumerate(O):
             temp = 0
             for e in self.emotions:
-                temp += transition[e.bin_number][current_state.as_tuple()][action.bin_number,i][next_state.as_tuple()]*self.belief_proba[e.bin_number]
-            B.append(temp*o)
-        B = B/np.sum(B)
+                temp += (
+                    transition[e.bin_number][current_state.as_tuple()][
+                        action.bin_number, i
+                    ][next_state.as_tuple()]
+                    * self.belief_proba[e.bin_number]
+                )
+            B.append(temp * o)
+        B = B / np.sum(B)
         return EmotionState(belief_proba=B)

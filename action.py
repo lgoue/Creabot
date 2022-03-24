@@ -1,13 +1,17 @@
 from __future__ import print_function
+
 from builtins import object
+
 from emotions import EmotionType
 
-
 N_ACTION = 5
+
+
 class ActionType(object):
     """
     Enumerates the potential CreabotActions
     """
+
     CRITICIZE = 0
     PRAISE = 1
     ENCOURAGE = 2
@@ -15,7 +19,7 @@ class ActionType(object):
     NEUTRAL = 4
 
 
-class Action():
+class Action:
     def __init__(self, action_type):
         self.bin_number = action_type
 
@@ -25,10 +29,10 @@ class Action():
     def distance_to():
         pass
 
-    def type_is(self,actiontype):
+    def type_is(self, actiontype):
         return self.bin_number == actiontype
 
-    def occ_emotion(self,state):
+    def occ_emotion(self, state):
         e = "Unknown"
         match self.bin_number:
             case ActionType.CRITICIZE:
@@ -44,7 +48,7 @@ class Action():
         return e
 
     def to_string(self):
-        action="Unknown"
+        action = "Unknown"
         if self.bin_number is ActionType.CRITICIZE:
             action = "Critic"
         elif self.bin_number is ActionType.PRAISE:
